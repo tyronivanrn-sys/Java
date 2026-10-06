@@ -1,0 +1,296 @@
+//AbstractFactoryPattern
+
+public interface Shape {
+   void draw();
+}
+
+public class RoundedRectangle implements Shape {
+   @Override
+   public void draw() {
+      System.out.println("Inside RoundedRectangle::draw() method.");
+   }
+}
+
+public class RoundedSquare implements Shape {
+   @Override
+   public void draw() {
+      System.out.println("Inside RoundedSquare::draw() method.");
+   }
+}
+public abstract class AbstractFactory {
+   abstract Shape getShape(String shapeType) ;
+}
+
+public class ShapeFactory extends AbstractFactory {
+   @Override
+   public Shape getShape(String shapeType){    
+      if(shapeType.equalsIgnoreCase("RECTANGLE")){
+         return new Rectangle();         
+      }else if(shapeType.equalsIgnoreCase("SQUARE")){
+         return new Square();
+      }	 
+      return null;
+   }
+}
+
+public class RoundedShapeFactory extends AbstractFactory {
+   @Override
+   public Shape getShape(String shapeType){    
+      if(shapeType.equalsIgnoreCase("RECTANGLE")){
+         return new RoundedRectangle();         
+      }else if(shapeType.equalsIgnoreCase("SQUARE")){
+         return new RoundedSquare();
+      }	 
+      return null;
+   }
+}
+
+public class FactoryProducer {
+   public static AbstractFactory getFactory(boolean rounded){   
+      if(rounded){
+         return new RoundedShapeFactory();         
+      }else{
+         return new ShapeFactory();
+      }
+   }
+}
+
+
+public class AbstractFactoryPatternDemo {
+   public static void main(String[] args) {
+      //get shape factory
+      AbstractFactory shapeFactory = FactoryProducer.getFactory(false);
+      //get an object of Shape Rectangle
+      Shape shape1 = shapeFactory.getShape("RECTANGLE");
+      //call draw method of Shape Rectangle
+      shape1.draw();
+      //get an object of Shape Square 
+      Shape shape2 = shapeFactory.getShape("SQUARE");
+      //call draw method of Shape Square
+      shape2.draw();
+      //get shape factory
+      AbstractFactory shapeFactory1 = FactoryProducer.getFactory(true);
+      //get an object of Shape Rectangle
+      Shape shape3 = shapeFactory1.getShape("RECTANGLE");
+      //call draw method of Shape Rectangle
+      shape3.draw();
+      //get an object of Shape Square 
+      Shape shape4 = shapeFactory1.getShape("SQUARE");
+      //call draw method of Shape Square
+      shape4.draw();
+      
+   }
+}
+
+-----------------------------------------------------------------------------
+
+
+public class Rectangle implements Shape {
+   @Override
+   public void draw() {
+      System.out.println("Inside Rectangle::draw() method.");
+   }
+}
+
+//BUILDER PATTERN
+//Builder pattern builds a complex object using simple objects and using a step by step approach. 
+//This type of design pattern comes under creational pattern as this pattern provides one of the best 
+//ways to create an object.
+
+public interface Item {
+   public String name();
+   public Packing packing();
+   public float price();	
+}
+
+public interface Packing {
+   public String pack();
+}
+
+public class Wrapper implements Packing {
+
+   @Override
+   public String pack() {
+      return "Wrapper";
+   }
+}
+
+public class Bottle implements Packing {
+
+   @Override
+   public String pack() {
+      return "Bottle";
+   }
+}
+Item.java
+public interface Item {
+   public String name();
+   public Packing packing();
+   public float price();	
+}
+
+public interface Packing {
+   public String pack();
+}
+
+public class Wrapper implements Packing {
+
+   @Override
+   public String pack() {
+      return "Wrapper";
+   }
+}
+
+public class Bottle implements Packing {
+
+   @Override
+   public String pack() {
+      return "Bottle";
+   }
+}
+
+public abstract class Burger implements Item {
+
+   @Override
+   public Packing packing() {
+      return new Wrapper();
+   }
+
+   @Override
+   public abstract float price();
+}
+
+public abstract class ColdDrink implements Item {
+
+	@Override
+	public Packing packing() {
+       return new Bottle();
+	}
+
+	@Override
+	public abstract float price();
+}
+
+public class VegBurger extends Burger {
+
+   @Override
+   public float price() {
+      return 25.0f;
+   }
+
+   @Override
+   public String name() {
+      return "Veg Burger";
+   }
+}
+
+public class ChickenBurger extends Burger {
+
+   @Override
+   public float price() {
+      return 50.5f;
+   }
+
+   @Override
+   public String name() {
+      return "Chicken Burger";
+   }
+}
+public class Coke extends ColdDrink {
+
+   @Override
+   public float price() {
+      return 30.0f;
+   }
+
+   @Override
+   public String name() {
+      return "Coke";
+   }
+}
+
+public class Pepsi extends ColdDrink {
+
+   @Override
+   public float price() {
+      return 35.0f;
+   }
+
+   @Override
+   public String name() {
+      return "Pepsi";
+   }
+}
+
+Meal.java
+import java.util.ArrayList;
+import java.util.List;
+
+public class Meal {
+   private List<Item> items = new ArrayList<Item>();	
+
+   public void addItem(Item item){
+      items.add(item);
+   }
+
+   public float getCost(){
+      float cost = 0.0f;
+      
+      for (Item item : items) {
+         cost += item.price();
+      }		
+      return cost;
+   }
+
+   public void showItems(){
+   
+      for (Item item : items) {
+         System.out.print("Item : " + item.name());
+         System.out.print(", Packing : " + item.packing().pack());
+         System.out.println(", Price : " + item.price());
+      }		
+   }	
+}
+
+public class MealBuilder {
+
+   public Meal prepareVegMeal (){
+      Meal meal = new Meal();
+      meal.addItem(new VegBurger());
+      meal.addItem(new Coke());
+      return meal;
+   }   
+
+   public Meal prepareNonVegMeal (){
+      Meal meal = new Meal();
+      meal.addItem(new ChickenBurger());
+      meal.addItem(new Pepsi());
+      return meal;
+   }
+}
+
+public class BuilderPatternDemo {
+   public static void main(String[] args) {
+   
+      MealBuilder mealBuilder = new MealBuilder();
+
+      Meal vegMeal = mealBuilder.prepareVegMeal();
+      System.out.println("Veg Meal");
+      vegMeal.showItems();
+      System.out.println("Total Cost: " + vegMeal.getCost());
+
+      Meal nonVegMeal = mealBuilder.prepareNonVegMeal();
+      System.out.println("\n\nNon-Veg Meal");
+      nonVegMeal.showItems();
+      System.out.println("Total Cost: " + nonVegMeal.getCost());
+   }
+}
+
+Prototype
+
+This pattern involves implementing a prototype interface which tells to create a clone of the current object. This pattern is used when creation of object directly is costly. For example, an object is to be created after a costly database operation. We can cache the object, returns its clone on next request and update the database as and when needed thus reducing database calls.
+
+Structural PATTERN
+
+Design Pattern.
+Adaptader PATTERN
