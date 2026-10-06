@@ -1,1 +1,1 @@
-This is a lab created Patterns  in tutorialspoint and also has some examples solved from HackerRank problems.
+This is a laboratory created about Patterns is based in tutorialspoint.conm and also has some examples solved from HackerRank problems.
